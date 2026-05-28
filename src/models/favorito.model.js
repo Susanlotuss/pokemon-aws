@@ -9,6 +9,7 @@ const favoritoSchema = new mongoose.Schema({
     altura: Number,
     peso: Number,
     tipos: [String],
+    imagenUrl: String,
     fechaAgregado: {
         type: Date,
         default: Date.now

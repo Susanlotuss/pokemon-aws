@@ -1,5 +1,6 @@
 const axios = require('axios')
 const { Favorito } = require('../models/favorito.model')
+const { subirImagenPokemon } = require('./s3.service')
 
 const getPokemon = async (nombre) => {
     const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nombre}`)
@@ -15,7 +16,16 @@ const getPokemon = async (nombre) => {
 
 const agregarFavorito = async (nombre) => {
     const pokemon = await getPokemon(nombre)
-    const favorito = await Favorito.create(pokemon)
+
+    let imagenUrl = null
+
+    try {
+        imagenUrl = await subirImagenPokemon(nombre)
+    } catch(error) {
+        console.error('Error subiendo image a S3:', error.message)
+    }
+
+    const favorito = await Favorito.create({ ...pokemon, imagenUrl })
     return favorito
 }
 
